@@ -1,0 +1,80 @@
+<div class="container">
+
+  <h1 class="text-center page-header">Spacecraft</h1>
+
+  <form id="insert-form" class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Name</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="text" name="name" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Classification</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="text" name="classification">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Program</label>
+      <div class="col-sm-3">
+       <select class="form-control" name="pid" form="insert-form">
+         <option></option>
+          {{#each program}}
+            <option value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Start Date</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="date" name="startDate">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 control-label">End Date</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="date" name="endDate">
+      </div>
+    </div>
+    <div class="col-sm-offset-1">
+      <button type="submit" id="insert" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Submit</button>
+    </div>
+  </form>
+
+  <br><br>
+
+  <table id="table" class="table table-striped table-condensed table-hover">
+    <tr>
+      <th>Name</th>
+      <th>Classification</th>
+      <th>Program</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th colspan="2">Edit</th>
+    </tr>
+
+    {{#each results}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>{{this.classification}}</td>
+      <td>{{this.program}}</td>      
+      <td>{{this.startDate}}</td>
+
+      {{#if this.endDate}}
+      <td>{{this.endDate}}</td>
+      {{else}}
+      <td>Ongoing</td>
+      {{/if}}
+      
+      <td><a href="/update?id={{this.id}}"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> Update</button></a></td>
+
+      <td><button onclick="deleteRow('table', this, {{this.id}})" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</td>
+    </tr>
+    {{/each}}
+  </table>
+
+</div>
+
+ <script src="js/client.js"></script>

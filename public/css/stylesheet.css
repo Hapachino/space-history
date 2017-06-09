@@ -1,0 +1,5 @@
+.table tbody > tr > td, th { 
+    text-align: center;
+    vertical-align: middle;
+}
+
