@@ -1,9 +1,19 @@
 document.addEventListener('DOMContentLoaded', bindButtons);
+document.addEventListener('DOMContentLoaded', bindFilter);
+
+function bindFilter() {
+  var button = document.getElementById('filter')
+
+  button.addEventListener('click', function (event) {
+    var req = new XMLHttpRequest();
+  });
+}
+
 
 function bindButtons() {
   var button = document.getElementById('insert')
 
-  button.addEventListener('click', function (event) {
+  button.addEventListener('click', function(event) {
     if (!document.getElementsByName("name")[0].value) { return; }
 
     var req = new XMLHttpRequest();

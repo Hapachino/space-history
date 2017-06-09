@@ -31,6 +31,30 @@ app.get('/', function (req, res, next) {
     });
 });
 
+app.get('/filter', function (req, res, next) {
+  var context = {};
+  mysql.pool.query('SELECT s.id, s.name, classification, p.name AS program, startDate, endDate FROM spacecraft s \
+                    LEFT JOIN program p ON s.pid = p.id \
+                    WHERE s.pid = ?', [req.query.pid], function (err, results, fields) {
+      if (err) { return next(err); }
+      for (var i = 0; i < results.length; ++i) {
+        if (results[i].startDate == ("0000-00-00")) {
+          results[i].startDate = "";
+        }
+        if (results[i].endDate == "0000-00-00") {
+          results[i].endDate = "Ongoing";
+        }
+      }
+      context.results = results;
+
+      mysql.pool.query('SELECT id, name FROM program', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.program = results;
+        res.render('home', context);
+      });
+    });
+});
+
 app.get('/insert', function (req, res, next) {
   mysql.pool.query('SELECT EXISTS(SELECT 1 FROM spacecraft WHERE name = ?) AS COUNT', [req.query.name], function (err, results, fields) {
     if (results[0].COUNT) {
