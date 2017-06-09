@@ -82,33 +82,6 @@ app.get('/filter-spacecraft', function (req, res, next) {
   }
 });
 
-app.get('/rockets', function (req, res, next) {
-  var context = {};
-  mysql.pool.query('SELECT * from rocket \
-                    ORDER BY model ASC', function (err, results, fields) {
-      if (err) { return next(err); }
-      context.results = results;
-      res.render('rockets', context);
-    });
-});
-
-app.get('/insert-rockets', function (req, res, next) {
-  mysql.pool.query('SELECT EXISTS(SELECT 1 FROM rocket WHERE model = ?) AS COUNT', [req.query.model], function (err, results, fields) {
-    if (results[0].COUNT) {
-      res.send("dup");
-      return;
-    } else {
-      if (req.query.pid) {
-        mysql.pool.query('INSERT INTO rocket (model, height, stages, thrust) VALUES (?, ?, ?, ?)',
-          [req.query.model, req.query.height, req.query.stages, req.query.thrust], function (err, results, fields) {
-            if (err) { return next(err); }
-            res.send(JSON.stringify(results));
-          });
-      }
-    }
-  });
-});
-
 app.get('/update', function (req, res, next) {
   var context = {};
 
@@ -143,8 +116,62 @@ app.get('/update-complete', function (req, res, next) {
   }
 });
 
-app.get('/delete', function (req, res, next) {
+app.get('/delete-spacecraft', function (req, res, next) {
   mysql.pool.query("DELETE FROM spacecraft WHERE id = ?", [req.query.id], function (err, result) {
+    if (err) { return next(err); }
+  });
+});
+
+app.get('/rocket', function (req, res, next) {
+  var context = {};
+  mysql.pool.query('SELECT * FROM rocket \
+                    ORDER BY model ASC', function (err, results, fields) {
+      if (err) { return next(err); }
+      context.results = results;
+
+      mysql.pool.query('SELECT DISTINCT stages FROM rocket ORDER BY stages ASC', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.stages = results;
+        res.render('rocket', context);
+      });
+    });
+});
+
+app.get('/insert-rocket', function (req, res, next) {
+  mysql.pool.query('SELECT EXISTS(SELECT 1 FROM rocket WHERE model = ?) AS COUNT', [req.query.model], function (err, results, fields) {
+    if (results[0].COUNT) {
+      res.send("dup");
+      return;
+    } else {
+      mysql.pool.query('INSERT INTO rocket (model, height, stages, thrust) VALUES (?, ?, ?, ?)',
+        [req.query.model, req.query.height, req.query.stages, req.query.thrust], function (err, results, fields) {
+          if (err) { return next(err); }
+          res.send(JSON.stringify(results));
+        });
+    }
+  });
+});
+
+app.get('/filter-rocket', function (req, res, next) {
+  var context = {};
+  if (!req.query.stages) {
+    res.redirect(302, "/rocket");
+  } else {
+    mysql.pool.query('SELECT * FROM rocket WHERE stages = ? ORDER BY MODEL ASC', [req.query.stages], function (err, results, fields) {
+      if (err) { return next(err); }
+      context.results = results;
+
+      mysql.pool.query('SELECT DISTINCT stages FROM rocket ORDER BY stages ASC', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.stages = results;
+        res.render('rocket', context);
+      });
+    });
+  }
+});
+
+app.get('/delete-rocket', function (req, res, next) {
+  mysql.pool.query("DELETE FROM rocket WHERE id = ?", [req.query.id], function (err, result) {
     if (err) { return next(err); }
   });
 });

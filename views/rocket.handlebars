@@ -2,7 +2,7 @@
   <div class="container">
     <ul class="nav navbar-nav">
       <li><a href="/">Spacecraft</a></li>
-      <li class="active"><a href="/rockets">Rockets</a></li>
+      <li class="active"><a href="/rocket">Rockets</a></li>
       <li><a href="#">Programs</a></li>
       <li><a href="#">Planets</a></li>
     </ul>
@@ -46,17 +46,17 @@
 
 <br><br>
 
-{{!--<form class="form-inline" action="/filter">
+<form class="form-inline" action="/filter-rocket">
   <div class="form-group">
-    <select class="form-control" name="pid">
+    <select class="form-control" name="stages">
          <option></option>
-          {{#each program}}
-            <option value="{{this.id}}">{{this.name}}</option>
+          {{#each stages}}
+            <option value="{{this.stages}}">{{this.stages}}</option>
           {{/each}}
         </select>
   </div>
   <button type="submit" class="btn btn-default">Filter</button>
-</form>--}}
+</form>
 
   <br><br>
 
@@ -66,6 +66,7 @@
       <th>Height</th>
       <th>Stages</th>
       <th>Thrust</th>
+      <th>Edit</th>
     </tr>
 
     {{#each results}}
@@ -74,10 +75,12 @@
       <td>{{this.height}}</td>
       <td>{{this.stages}}</td>      
       <td>{{this.thrust}}</td>
+
+      <td><button onclick="deleteRow('table', this, {{this.id}})" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</td>
     </tr>
     {{/each}}
   </table>
 
 </div>
 
- <script src="js/client.js"></script>
+ <script src="js/rocket.js"></script>
