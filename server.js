@@ -31,7 +31,7 @@ app.get('/', function (req, res, next) {
     });
 });
 
-app.get('/filter', function (req, res, next) {
+app.get('/filter-spacecraft', function (req, res, next) {
   var context = {};
   mysql.pool.query('SELECT s.id, s.name, classification, p.name AS program, startDate, endDate FROM spacecraft s \
                     LEFT JOIN program p ON s.pid = p.id \
@@ -55,7 +55,17 @@ app.get('/filter', function (req, res, next) {
     });
 });
 
-app.get('/insert', function (req, res, next) {
+app.get('/rockets', function (req, res, next) {
+  var context = {};
+  mysql.pool.query('SELECT * from rocket \
+                    ORDER BY model ASC', function (err, results, fields) {
+      if (err) { return next(err); }
+      context.results = results;
+      res.render('rockets', context);
+    });
+});
+
+app.get('/insert-spacecraft', function (req, res, next) {
   mysql.pool.query('SELECT EXISTS(SELECT 1 FROM spacecraft WHERE name = ?) AS COUNT', [req.query.name], function (err, results, fields) {
     if (results[0].COUNT) {
       res.send("dup");

@@ -1,3 +1,14 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Spacecraft</a></li>
+      <li><a href="/rockets">Rockets</a></li>
+      <li><a href="#">Programs</a></li>
+      <li><a href="#">Planets</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="container">
 
   <h1 class="text-center page-header">Spacecraft</h1>
@@ -46,7 +57,7 @@
 
 <br><br>
 
-<form class="form-inline" action="/filter">
+<form class="form-inline" action="/filter-spacecraft">
   <div class="form-group">
     <select class="form-control" name="pid">
          <option></option>
@@ -64,14 +75,7 @@
     <tr>
       <th>Name</th>
       <th>Classification</th>
-      <th>
-        <select id="filter">
-         <option>Program</option>
-          {{#each program}}
-            <option value="{{this.id}}">{{this.name}}</option>
-          {{/each}}
-        </select>
-      </th>
+      <th>Program</th>
       <th>Start Date</th>
       <th>End Date</th>
       <th colspan="2">Edit</th>

@@ -1,14 +1,4 @@
 document.addEventListener('DOMContentLoaded', bindButtons);
-document.addEventListener('DOMContentLoaded', bindFilter);
-
-function bindFilter() {
-  var button = document.getElementById('filter')
-
-  button.addEventListener('click', function (event) {
-    var req = new XMLHttpRequest();
-  });
-}
-
 
 function bindButtons() {
   var button = document.getElementById('insert')
@@ -23,7 +13,7 @@ function bindButtons() {
       "&startDate=" + document.getElementsByName("startDate")[0].value +
       "&endDate=" + document.getElementsByName("endDate")[0].value;
 
-    req.open("GET", "/insert?" + payload, true);
+    req.open("GET", "/insert-spacecraft?" + payload, true);
 
     req.addEventListener('load', function (event) {
       if (req.status >= 200 && req.status < 400) {
