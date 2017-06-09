@@ -13,6 +13,14 @@ app.get('/', function (req, res, next) {
   mysql.pool.query('SELECT s.id, s.name, classification, p.name AS program, startDate, endDate FROM spacecraft s \
                     LEFT JOIN program p ON s.pid = p.id ORDER BY startDate ASC', function (err, results, fields) {
       if (err) { return next(err); }
+      for (var i = 0; i < results.length; ++i) {
+        if (results[i].startDate == ("0000-00-00")) {
+          results[i].startDate = "";
+        }
+        if (results[i].endDate == "0000-00-00") {
+          results[i].endDate = "Ongoing";
+        }
+      }
       context.results = results;
 
       mysql.pool.query('SELECT id, name FROM program', function (err, results, fields) {
@@ -24,19 +32,26 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/insert', function (req, res, next) {
-  if (req.query.pid) {
-    mysql.pool.query('INSERT INTO spacecraft (name, classification, pid, startDate, endDate) VALUES (?, ?, ?, ?, ?)',
-      [req.query.name, req.query.classification, req.query.pid, req.query.startDate, req.query.endDate], function (err, results, fields) {
-        if (err) { return next(err); }
-        res.send(JSON.stringify(results));
-      });
-  } else {
-    mysql.pool.query('INSERT INTO spacecraft (name, classification, startDate, endDate) VALUES (?, ?, ?, ?)',
-      [req.query.name, req.query.classification, req.query.startDate, req.query.endDate], function (err, results, fields) {
-        if (err) { return next(err); }
-        res.send(JSON.stringify(results));
-      });
+  mysql.pool.query('SELECT EXISTS(SELECT 1 FROM spacecraft WHERE name = ?) AS COUNT', [req.query.name], function (err, results, fields) {
+    if (results[0].COUNT) {
+      res.send("dup");
+      return;
+    } else {
+      if (req.query.pid) {
+        mysql.pool.query('INSERT INTO spacecraft (name, classification, pid, startDate, endDate) VALUES (?, ?, ?, ?, ?)',
+          [req.query.name, req.query.classification, req.query.pid, req.query.startDate, req.query.endDate], function (err, results, fields) {
+            if (err) { return next(err); }
+            res.send(JSON.stringify(results));
+          });
+      } else {
+        mysql.pool.query('INSERT INTO spacecraft (name, classification, startDate, endDate) VALUES (?, ?, ?, ?)',
+          [req.query.name, req.query.classification, req.query.startDate, req.query.endDate], function (err, results, fields) {
+            if (err) { return next(err); }
+            res.send(JSON.stringify(results));
+          });
+      }
     }
+  });
 });
 
 app.get('/update', function (req, res, next) {

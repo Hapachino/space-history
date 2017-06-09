@@ -17,6 +17,17 @@ function bindButtons() {
 
     req.addEventListener('load', function (event) {
       if (req.status >= 200 && req.status < 400) {
+        var error = document.getElementById("error");
+
+        if (req.responseText == "dup") {
+          error.textContent = "That name already exists.";
+          error.className = "alert alert-danger";
+          return;
+        }
+        
+        error.textContent = " ";
+        error.className = " ";
+
         var id = JSON.parse(req.responseText).insertId;
         var table = document.getElementById("table");
         var row = table.insertRow(-1);
@@ -35,11 +46,19 @@ function bindButtons() {
         row.appendChild(pid);
         
         var startDate = document.createElement("td");
-        startDate.textContent = document.getElementsByName("startDate")[0].value || "0000-00-00";
+        if (document.getElementsByName("startDate")[0].value == "0000-00-00") {
+          startDate.textContent = "";
+        } else {
+          startDate.textContent = document.getElementsByName("startDate")[0].value; 
+        }
         row.appendChild(startDate);
 
         var endDate = document.createElement("td");
-        endDate.textContent = document.getElementsByName("endDate")[0].value || "0000-00-00";
+        if (!document.getElementsByName("endDate")[0].value) {
+          endDate.textContent = "Ongoing";
+        } else {
+          endDate.textContent = document.getElementsByName("endDate")[0].value; 
+        }
         row.appendChild(endDate);
 
         var update = document.createElement('td');
