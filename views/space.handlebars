@@ -54,7 +54,12 @@
     <div class="form-group">
       <label class="col-sm-1 control-label">Orbits</label>
       <div class="col-sm-3">
-        <input class="form-control" type="number" name="orbits">
+      <select class="form-control" name="orbits">
+         <option></option>
+          {{#each names}}
+            <option value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
       </div>
     </div>
     <div class="col-sm-offset-1">

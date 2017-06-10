@@ -43,7 +43,7 @@ function bindButtons() {
 
         var pid = document.createElement("td");
         var element = document.getElementsByName("pid")[0];        
-        pid.textContent = document.getElementsByName("pid")[0].options[element.selectedIndex].text
+        pid.textContent = document.getElementsByName("pid")[0].options[element.selectedIndex].text;
         row.appendChild(pid);
         
         var startDate = document.createElement("td");

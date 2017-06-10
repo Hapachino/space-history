@@ -60,7 +60,8 @@ function bindButtons() {
         row.appendChild(moons);
 
         var orbits = document.createElement("td");
-        orbits.textContent = document.getElementsByName("orbits")[0].value;
+        var element = document.getElementsByName("orbits")[0]; 
+        orbits.textContent = document.getElementsByName("orbits")[0].options[element.selectedIndex].text;
         row.appendChild(orbits);
 
         var deletion = document.createElement('td');

@@ -330,11 +330,18 @@ app.get('/space', function (req, res, next) {
       }
       context.results = results;
 
-      mysql.pool.query('SELECT DISTINCT classification FROM space ORDER BY classification DESC', function (err, results, fields) {
-        if (err) { return next(err); }
-        context.classification = results;
-        res.render('space', context);
-      });
+      mysql.pool.query('SELECT DISTINCT name, id FROM space \
+                        WHERE classification = "planet" \
+                        ORDER BY au', function (err, results, fields) {
+          if (err) { return next(err); }
+          context.names = results;
+
+          mysql.pool.query('SELECT DISTINCT classification FROM space ORDER BY classification DESC', function (err, results, fields) {
+            if (err) { return next(err); }
+            context.classification = results;
+            res.render('space', context);
+          });
+        });
     });
 });
 
