@@ -331,7 +331,6 @@ app.get('/space', function (req, res, next) {
       context.results = results;
 
       mysql.pool.query('SELECT DISTINCT name, id FROM space \
-                        WHERE classification = "planet" \
                         ORDER BY au', function (err, results, fields) {
           if (err) { return next(err); }
           context.names = results;
@@ -399,6 +398,44 @@ app.get('/delete-space', function (req, res, next) {
   mysql.pool.query("DELETE FROM space WHERE id = ?", [req.query.id], function (err, result) {
     if (err) { return next(err); }
   });
+});
+
+app.get('/relationships', function (req, res, next) {
+  var context = {};  
+
+  mysql.pool.query('SELECT name FROM spacecraft', function (err, results, fields) {
+    if (err) { return next(err); }
+    context.spacecraft = results;
+
+    mysql.pool.query('SELECT model FROM rocket', function (err, results, fields) {
+      if (err) { return next(err); }
+      context.rocket = results;
+
+      mysql.pool.query('SELECT name FROM space \
+                        ORDER BY au', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.space = results;
+        res.render('relationships', context);
+      });
+    });
+  });
+});
+
+app.get('/relationships-update', function (req, res, next) {
+  if (req.query.model) {
+    
+    mysql.pool.query("INSERT INTO launch VALUES ((SELECT id FROM spacecraft WHERE name = ?), (SELECT id FROM rocket WHERE model = ?))",
+      [req.query.name, req.query.model], function (err, results, fields) {
+        if (err && err.code != "ER_DUP_ENTRY") { return next(err); }
+        res.redirect(302, '/spacecraft-info?name=' + req.query.name);
+      });
+  } else {
+    mysql.pool.query("INSERT INTO explore VALUES ((SELECT id FROM spacecraft WHERE name = ?), (SELECT id FROM space WHERE name = ?)) ",
+      [req.query.spacecraft, req.query.space], function (err, results, fields) {
+        if (err && err.code != "ER_DUP_ENTRY") { return next(err); }
+        res.redirect(302, '/spacecraft-info?name=' + req.query.spacecraft);
+      });
+  }
 });
 
 app.use(function (req, res) {

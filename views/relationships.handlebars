@@ -1,0 +1,73 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <ul class="nav navbar-nav">
+      <li><a href="/">Spacecraft</a></li>
+      <li><a href="/rocket">Rockets</a></li>
+      <li><a href="/program">Programs</a></li>
+      <li><a href="/space">Space</a></li>
+      <li class="active"><a href="#">Add Relationships</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+  <h1 class="text-center page-header">Add Relationships</h1>
+
+  <form class="form-horizontal" action="/relationships-update">
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Spacecraft</label>
+      <div class="col-sm-3">
+        <select class="form-control" name="name">
+          {{#each spacecraft}}
+              <option value="{{this.name}}">{{this.name}}</option>                        
+          {{/each}}
+       </select>
+      </div>
+    </div>
+    <form class="form-horizontal" action="/relationships-update">
+      <div class="form-group">
+        <label class="col-sm-1 control-label">Rocket</label>
+        <div class="col-sm-3">
+          <select class="form-control" name="model">
+            {{#each rocket}}
+                <option value="{{this.model}}">{{this.model}}</option>                        
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-offset-1">
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Submit</button>
+      </div>
+    </form>
+
+  <hr>
+
+  <form class="form-horizontal" action="/relationships-update">
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Spacecraft</label>
+      <div class="col-sm-3">
+        <select class="form-control" name="spacecraft">
+          {{#each spacecraft}}
+              <option value="{{this.name}}">{{this.name}}</option>                        
+          {{/each}}
+       </select>
+      </div>
+    </div>
+    <form class="form-horizontal" action="/relationships-update">
+      <div class="form-group">
+        <label class="col-sm-1 control-label">Explored</label>
+        <div class="col-sm-3">
+          <select class="form-control" name="space">
+            {{#each space}}
+                <option value="{{this.name}}">{{this.name}}</option>                        
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-offset-1">
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Submit</button>
+      </div>
+    </form>
+
+</div>
