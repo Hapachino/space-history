@@ -91,6 +91,19 @@ function bindButtons() {
         row.appendChild(deletion);
 
         document.getElementById("insert-form").reset();
+
+        if (program.textContent) {
+          var filter = document.getElementById("filter");
+
+          for (i = 0; i < filter.options.length; ++i) {
+            if (program.textContent == filter.options[i].value) { return; }
+          };
+
+          var option = document.createElement("option");
+          option.text = program.textContent;
+          option.value = program.textContent;
+          filter.appendChild(option);
+        }
       } else {
         console.log("Error.");
       }

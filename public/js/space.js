@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', bindButtons);
 function bindButtons() {
   var button = document.getElementById('insert')
 
-  button.addEventListener('click', function(event) {
+  button.addEventListener('click', function (event) {
     if (!document.getElementsByName("name")[0].value) { return; }
 
     var req = new XMLHttpRequest();
@@ -14,7 +14,7 @@ function bindButtons() {
       "&au=" + document.getElementsByName("au")[0].value +
       "&moons=" + document.getElementsByName("moons")[0].value +
       "&orbits=" + document.getElementsByName("orbits")[0].value;
-      
+
     req.open("GET", "/insert-space?" + payload, true);
 
     req.addEventListener('load', function (event) {
@@ -27,7 +27,7 @@ function bindButtons() {
           document.getElementById("insert-form").reset();
           return;
         }
-        
+
         error.textContent = " ";
         error.className = " ";
 
@@ -46,7 +46,7 @@ function bindButtons() {
         var diameter = document.createElement("td");
         diameter.textContent = document.getElementsByName("diameter")[0].value;
         row.appendChild(diameter);
-        
+
         var mass = document.createElement("td");
         mass.textContent = document.getElementsByName("mass")[0].value;
         row.appendChild(mass);
@@ -77,6 +77,19 @@ function bindButtons() {
         row.appendChild(deletion);
 
         document.getElementById("insert-form").reset();
+
+        if (classification.textContent) {
+          var filter = document.getElementById("filter");
+
+          for (i = 0; i < filter.options.length; ++i) {
+            if (classification.textContent == filter.options[i].value) { return; }
+          };
+
+          var option = document.createElement("option");
+          option.text = classification.textContent;
+          option.value = classification.textContent;
+          filter.appendChild(option);
+        }
       } else {
         console.log("Error.");
       }

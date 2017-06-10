@@ -62,6 +62,19 @@ function bindButtons() {
         row.appendChild(deletion);
 
         document.getElementById("insert-form").reset();
+     
+        if (country.textContent) {
+          var filter = document.getElementById("filter");
+
+          for (i = 0; i < filter.options.length; ++i) {
+            if (country.textContent == filter.options[i].value) { return; }
+          };
+
+          var option = document.createElement("option");
+          option.text = country.textContent;
+          option.value = country.textContent;
+          filter.appendChild(option);
+        }
       } else {
         console.log("Error.");
       }

@@ -1,6 +1,6 @@
 var express = require('express');
 var mysql = require('./db.js');
-var handlebars = require('express-handlebars').create({defaultLayout: 'main'});
+var handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
 
 var app = express();
 app.use(express.static('public'));
@@ -88,16 +88,16 @@ app.get('/update', function (req, res, next) {
   mysql.pool.query('SELECT s.id, s.pid, s.name, classification, p.name AS program, startDate, endDate FROM spacecraft s \
                     LEFT JOIN program p ON s.pid = p.id \
                     WHERE s.id = ?', [req.query.id], function (err, results, fields) {
-    if (err) { return next(err); }
-    context.results = results[0];
-
-    mysql.pool.query('SELECT id, name FROM program \
-                     WHERE id NOT IN (IFNULL((SELECT pid FROM spacecraft WHERE id = ?), 0))', [req.query.id], function (err, results, fields) {
       if (err) { return next(err); }
-      context.program = results;
-      res.render('update', context);
+      context.results = results[0];
+
+      mysql.pool.query('SELECT id, name FROM program \
+                     WHERE id NOT IN (IFNULL((SELECT pid FROM spacecraft WHERE id = ?), 0))', [req.query.id], function (err, results, fields) {
+          if (err) { return next(err); }
+          context.program = results;
+          res.render('update', context);
+        });
     });
-  });
 });
 
 app.get('/update-complete', function (req, res, next) {
@@ -181,7 +181,7 @@ app.get('/program', function (req, res, next) {
   mysql.pool.query('SELECT * FROM program \
                     ORDER BY startYear ASC', function (err, results, fields) {
       if (err) { return next(err); }
-       for (var i = 0; i < results.length; ++i) {
+      for (var i = 0; i < results.length; ++i) {
         if (results[i].startYear == ("0000")) {
           results[i].startYear = "";
         }
@@ -253,10 +253,10 @@ app.get('/space', function (req, res, next) {
                     ORDER BY au ASC, mass DESC;', function (err, results, fields) {
       if (err) { return next(err); }
       for (var i = 0; i < results.length; ++i) {
-          results[i].diameter = results[i].diameter || "";
-          results[i].mass = results[i].mass || "";
-          results[i].au = results[i].au || "";
-          results[i].moons = results[i].moons || "";
+        results[i].diameter = results[i].diameter || "";
+        results[i].mass = results[i].mass || "";
+        results[i].au = results[i].au || "";
+        results[i].moons = results[i].moons || "";
       }
       context.results = results;
 
@@ -296,19 +296,25 @@ app.get('/filter-space', function (req, res, next) {
   if (!req.query.classification) {
     res.redirect(302, "/space");
   } else {
-    mysql.pool.query('SELECT a.name, a.classification, a.diameter, a.mass, a.au, a.moons, b.name AS orbiting FROM space a \
+    mysql.pool.query('SELECT a.id, a.name, a.classification, a.diameter, a.mass, a.au, a.moons, b.name AS orbiting FROM space a \
                     LEFT JOIN space b ON a.orbits = b.id \
                     WHERE a.classification = ? \
                     ORDER BY au ASC, mass DESC', [req.query.classification], function (err, results, fields) {
-      if (err) { return next(err); }
-      context.results = results;
-
-      mysql.pool.query('SELECT DISTINCT classification FROM space ORDER BY classification DESC', function (err, results, fields) {
         if (err) { return next(err); }
-        context.classification = results;
-        res.render('space', context);
+        for (var i = 0; i < results.length; ++i) {
+          results[i].diameter = results[i].diameter || "";
+          results[i].mass = results[i].mass || "";
+          results[i].au = results[i].au || "";
+          results[i].moons = results[i].moons || "";
+        }
+        context.results = results;
+
+        mysql.pool.query('SELECT DISTINCT classification FROM space ORDER BY classification DESC', function (err, results, fields) {
+          if (err) { return next(err); }
+          context.classification = results;
+          res.render('space', context);
+        });
       });
-    });
   }
 });
 

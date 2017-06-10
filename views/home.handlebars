@@ -59,7 +59,7 @@
     <form class="form-inline" action="/filter-spacecraft">
       <div class="form-group">
         <label class="control-label">Program</label>
-        <select class="form-control" name="pid">
+        <select class="form-control" name="pid" id="filter">
          <option></option>
           {{#each program}}
             <option value="{{this.id}}">{{this.name}}</option>
