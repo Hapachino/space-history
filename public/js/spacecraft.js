@@ -92,16 +92,16 @@ function bindButtons() {
 
         document.getElementById("insert-form").reset();
 
-        if (program.textContent) {
+        if (pid.textContent) {
           var filter = document.getElementById("filter");
 
           for (i = 0; i < filter.options.length; ++i) {
-            if (program.textContent == filter.options[i].value) { return; }
+            if (pid.textContent == filter.options[i].value) { return; }
           };
 
           var option = document.createElement("option");
-          option.text = program.textContent;
-          option.value = program.textContent;
+          option.text = pid.textContent;
+          option.value = pid.textContent;
           filter.appendChild(option);
         }
       } else {

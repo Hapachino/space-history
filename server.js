@@ -26,7 +26,7 @@ app.get('/', function (req, res, next) {
       mysql.pool.query('SELECT id, name FROM program', function (err, results, fields) {
         if (err) { return next(err); }
         context.program = results;
-        res.render('home', context);
+        res.render('spacecraft', context);
       });
     });
 });
@@ -76,7 +76,7 @@ app.get('/filter-spacecraft', function (req, res, next) {
         mysql.pool.query('SELECT id, name FROM program', function (err, results, fields) {
           if (err) { return next(err); }
           context.program = results;
-          res.render('home', context);
+          res.render('spacecraft', context);
         });
       });
   }
@@ -118,6 +118,76 @@ app.get('/update-complete', function (req, res, next) {
 
 app.get('/delete-spacecraft', function (req, res, next) {
   mysql.pool.query("DELETE FROM spacecraft WHERE id = ?", [req.query.id], function (err, result) {
+    if (err) { return next(err); }
+  });
+});
+
+app.get('/spacecraft-info', function (req, res, next) {
+  var context = {};
+  mysql.pool.query('SELECT s.id, s.name, classification, p.name AS program, startDate, endDate FROM spacecraft s \
+                    LEFT JOIN program p ON s.pid = p.id \
+                    WHERE s.name = ? \
+                    ORDER BY startDate ASC', [req.query.name], function (err, results, fields) {
+      if (err) { return next(err); }
+      for (var i = 0; i < results.length; ++i) {
+        if (results[i].startDate == ("0000-00-00")) {
+          results[i].startDate = "";
+        }
+        if (results[i].endDate == "0000-00-00") {
+          results[i].endDate = "Ongoing";
+        }
+      }
+      context.results = results[0];
+
+      mysql.pool.query('SELECT model, height, stages, thrust, r.id AS id FROM rocket r \
+                        INNER JOIN launch l on r.id = l.rid \
+                        INNER JOIN spacecraft s ON s.id = l.sid \
+                        WHERE s.name = ?', [req.query.name], function (err, results, fields) {
+          if (err) { return next(err); }
+          context.rocket = results;
+
+          mysql.pool.query('SELECT * FROM program \
+                        WHERE id = (SELECT pid FROM spacecraft WHERE name = ?)', [req.query.name], function (err, results, fields) {
+              if (err) { return next(err); }
+              for (var i = 0; i < results.length; ++i) {
+                if (results[i].startYear == ("0000")) {
+                  results[i].startYear = "";
+                }
+                if (!results[i].endYear || results[i].endYear == "0000") {
+                  results[i].endYear = "Ongoing";
+                }
+              }
+              context.pid = results;
+
+              mysql.pool.query('SELECT a.id, a.name, a.classification, a.diameter, a.mass, a.au, a.moons, b.name AS orbiting FROM space a \
+                        LEFT JOIN space b ON a.orbits = b.id \
+                        INNER JOIN explore e ON a.id = e.sid \
+                        INNER JOIN spacecraft s ON e.scid = s.id \
+                        WHERE s.name = ? \
+                        ORDER BY au ASC, mass DESC;', [req.query.name], function (err, results, fields) {
+                  if (err) { return next(err); }
+                  for (var i = 0; i < results.length; ++i) {
+                    results[i].diameter = results[i].diameter || "";
+                    results[i].mass = results[i].mass || "";
+                    results[i].au = results[i].au || "";
+                    results[i].moons = results[i].moons || "";
+                  }
+                  context.space = results;
+
+                  mysql.pool.query('SELECT id, name FROM program \
+                     WHERE id NOT IN (IFNULL((SELECT pid FROM spacecraft WHERE id = ?), 0))', [req.query.id], function (err, results, fields) {
+                      if (err) { return next(err); }
+                      context.program = results;
+                      res.render('spacecraft-info', context);
+                    });
+                });
+            });
+        });
+    });
+});
+
+app.get('/delete-spacecraft-info', function (req, res, next) {
+  mysql.pool.query("DELETE FROM launch WHERE rid = ?", [req.query.id], function (err, result) {
     if (err) { return next(err); }
   });
 });
