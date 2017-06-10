@@ -8,11 +8,14 @@ function bindButtons() {
 
     var req = new XMLHttpRequest();
     var payload = "name=" + document.getElementsByName("name")[0].value +
-      "&country=" + document.getElementsByName("country")[0].value +
-      "&startYear=" + document.getElementsByName("startYear")[0].value +
-      "&endYear=" + document.getElementsByName("endYear")[0].value;
-
-    req.open("GET", "/insert-program?" + payload, true);
+      "&classification=" + document.getElementsByName("classification")[0].value +
+      "&diameter=" + document.getElementsByName("diameter")[0].value +
+      "&mass=" + document.getElementsByName("mass")[0].value +
+      "&au=" + document.getElementsByName("au")[0].value +
+      "&moons=" + document.getElementsByName("moons")[0].value +
+      "&orbits=" + document.getElementsByName("orbits")[0].value;
+      
+    req.open("GET", "/insert-space?" + payload, true);
 
     req.addEventListener('load', function (event) {
       if (req.status >= 200 && req.status < 400) {
@@ -36,17 +39,29 @@ function bindButtons() {
         name.textContent = document.getElementsByName("name")[0].value;
         row.appendChild(name);
 
-        var country = document.createElement("td");
-        country.textContent = document.getElementsByName("country")[0].value;
-        row.appendChild(country);
+        var classification = document.createElement("td");
+        classification.textContent = document.getElementsByName("classification")[0].value;
+        row.appendChild(classification);
 
-        var startYear = document.createElement("td");
-        startYear.textContent = document.getElementsByName("startYear")[0].value;
-        row.appendChild(startYear);
+        var diameter = document.createElement("td");
+        diameter.textContent = document.getElementsByName("diameter")[0].value;
+        row.appendChild(diameter);
         
-        var endYear = document.createElement("td");
-        endYear.textContent = document.getElementsByName("endYear")[0].value || "Ongoing" 
-        row.appendChild(endYear);
+        var mass = document.createElement("td");
+        mass.textContent = document.getElementsByName("mass")[0].value;
+        row.appendChild(mass);
+
+        var au = document.createElement("td");
+        au.textContent = document.getElementsByName("au")[0].value;
+        row.appendChild(au);
+
+        var moons = document.createElement("td");
+        moons.textContent = document.getElementsByName("moons")[0].value;
+        row.appendChild(moons);
+
+        var orbits = document.createElement("td");
+        orbits.textContent = document.getElementsByName("orbits")[0].value;
+        row.appendChild(orbits);
 
         var deletion = document.createElement('td');
         var button = document.createElement('button');
@@ -76,7 +91,7 @@ function deleteRow(tableId, td, id) {
   table.deleteRow(td.closest("tr").rowIndex);
 
   var req = new XMLHttpRequest();
-  req.open("GET", "/delete-program?id=" + id, true);
+  req.open("GET", "/delete-space?id=" + id, true);
   req.addEventListener("load", function () {
     if (req.status < 200 || req.status >= 400) { console.log('error'); }
   });

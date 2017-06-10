@@ -221,7 +221,6 @@ app.get('/filter-program', function (req, res, next) {
   } else {
     mysql.pool.query('SELECT * FROM program WHERE country = ? ORDER BY startYear ASC', [req.query.country], function (err, results, fields) {
       if (err) { return next(err); }
-      if (err) { return next(err); }
       for (var i = 0; i < results.length; ++i) {
         if (results[i].startYear == ("0000")) {
           results[i].startYear = "";
@@ -243,6 +242,78 @@ app.get('/filter-program', function (req, res, next) {
 
 app.get('/delete-program', function (req, res, next) {
   mysql.pool.query("DELETE FROM program WHERE id = ?", [req.query.id], function (err, result) {
+    if (err) { return next(err); }
+  });
+});
+
+app.get('/space', function (req, res, next) {
+  var context = {};
+  mysql.pool.query('SELECT a.id, a.name, a.classification, a.diameter, a.mass, a.au, a.moons, b.name AS orbiting FROM space a \
+                    LEFT JOIN space b ON a.orbits = b.id \
+                    ORDER BY au ASC, mass DESC;', function (err, results, fields) {
+      if (err) { return next(err); }
+      for (var i = 0; i < results.length; ++i) {
+          results[i].diameter = results[i].diameter || "";
+          results[i].mass = results[i].mass || "";
+          results[i].au = results[i].au || "";
+          results[i].moons = results[i].moons || "";
+      }
+      context.results = results;
+
+      mysql.pool.query('SELECT DISTINCT classification FROM space ORDER BY classification DESC', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.classification = results;
+        res.render('space', context);
+      });
+    });
+});
+
+app.get('/insert-space', function (req, res, next) {
+  mysql.pool.query('SELECT EXISTS(SELECT 1 FROM space WHERE name = ?) AS COUNT', [req.query.name], function (err, results, fields) {
+    if (results[0].COUNT) {
+      res.send("dup");
+      return;
+    } else {
+      if (!req.query.orbits) {
+        mysql.pool.query('INSERT INTO space (name, classification, diameter, mass, au, moons) VALUES (?, ?, ?, ?, ?, ?)',
+          [req.query.name, req.query.classification, req.query.diameter, req.query.mass, req.query.au, req.query.moons], function (err, results, fields) {
+            if (err) { return next(err); }
+            res.send(JSON.stringify(results));
+          });
+      } else {
+        mysql.pool.query('INSERT INTO space (name, classification, diameter, mass, au, moons, orbits) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [req.query.name, req.query.classification, req.query.diameter, req.query.mass, req.query.au, req.query.moons, req.query.orbits], function (err, results, fields) {
+            if (err) { return next(err); }
+            res.send(JSON.stringify(results));
+          });
+      }
+    }
+  });
+});
+
+app.get('/filter-space', function (req, res, next) {
+  var context = {};
+  if (!req.query.classification) {
+    res.redirect(302, "/space");
+  } else {
+    mysql.pool.query('SELECT a.name, a.classification, a.diameter, a.mass, a.au, a.moons, b.name AS orbiting FROM space a \
+                    LEFT JOIN space b ON a.orbits = b.id \
+                    WHERE a.classification = ? \
+                    ORDER BY au ASC, mass DESC', [req.query.classification], function (err, results, fields) {
+      if (err) { return next(err); }
+      context.results = results;
+
+      mysql.pool.query('SELECT DISTINCT classification FROM space ORDER BY classification DESC', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.classification = results;
+        res.render('space', context);
+      });
+    });
+  }
+});
+
+app.get('/delete-space', function (req, res, next) {
+  mysql.pool.query("DELETE FROM space WHERE id = ?", [req.query.id], function (err, result) {
     if (err) { return next(err); }
   });
 });

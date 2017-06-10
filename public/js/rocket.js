@@ -21,6 +21,7 @@ function bindButtons() {
         if (req.responseText == "dup") {
           error.textContent = "That model already exists.";
           error.className = "alert alert-danger";
+          document.getElementById("insert-form").reset();
           return;
         }
         

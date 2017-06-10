@@ -1,17 +1,17 @@
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Spacecraft</a></li>
+      <li><a href="/">Spacecraft</a></li>
       <li><a href="/rocket">Rockets</a></li>
       <li><a href="/program">Programs</a></li>
-      <li><a href="/space">Space</a></li>
+      <li class="active"><a href="/space">Space</a></li>
     </ul>
   </div>
 </nav>
 
 <div class="container">
 
-  <h1 class="text-center page-header">Spacecraft</h1>
+  <h1 class="text-center page-header">Space</h1>
 
   <form id="insert-form" class="form-horizontal">
     <div class="form-group">
@@ -28,26 +28,33 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-1 control-label">Program</label>
+      <label class="col-sm-1 control-label">Diameter</label>
       <div class="col-sm-3">
-        <select class="form-control" name="pid" form="insert-form">
-         <option></option>
-          {{#each program}}
-            <option value="{{this.id}}">{{this.name}}</option>
-          {{/each}}
-        </select>
+        <input class="form-control" type="number" name="diameter">
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-1 control-label">Start Date</label>
+      <label class="col-sm-1 control-label">Mass</label>
       <div class="col-sm-3">
-        <input class="form-control" type="date" name="startDate">
+        <input class="form-control" type="number" step="0.01" name="mass">
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-1 control-label">End Date</label>
+      <label class="col-sm-1 control-label">AU</label>
       <div class="col-sm-3">
-        <input class="form-control" type="date" name="endDate">
+        <input class="form-control" type="number" name="au">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Moons</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="number" name="moons">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 control-label">Orbits</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="number" name="orbits">
       </div>
     </div>
     <div class="col-sm-offset-1">
@@ -56,13 +63,13 @@
   </form>
 
   <div class="pull-right">
-    <form class="form-inline" action="/filter-spacecraft">
+    <form class="form-inline" action="/filter-space">
       <div class="form-group">
-        <label class="control-label">Program</label>
-        <select class="form-control" name="pid">
+        <label class="control-label">Classification</label>
+        <select class="form-control" name="classification">
          <option></option>
-          {{#each program}}
-            <option value="{{this.id}}">{{this.name}}</option>
+          {{#each classification}}
+            <option value="{{this.classification}}">{{this.classification}}</option>
           {{/each}}
         </select>
       </div>
@@ -76,27 +83,24 @@
     <tr>
       <th>Name</th>
       <th>Classification</th>
-      <th>Program</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th colspan="2">Edit</th>
+      <th>Diameter</th>
+      <th>Mass</th>
+      <th>AU</th>
+      <th>Moons</th>
+      <th>Orbits</th>
+      <th>Edit</th>
     </tr>
 
     {{#each results}}
     <tr>
       <td>{{this.name}}</td>
       <td>{{this.classification}}</td>
-      <td>{{this.program}}</td>
-      <td>{{this.startDate}}</td>
-
-      {{#if this.endDate}}
-      <td>{{this.endDate}}</td>
-      {{else}}
-      <td>Ongoing</td>
-      {{/if}}
-
-      <td><a href="/update?id={{this.id}}"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> Update</button></a></td>
-
+      <td>{{this.diameter}}</td>
+      <td>{{this.mass}}</td>
+      <td>{{this.au}}</td>
+      <td>{{this.moons}}</td>
+      <td>{{this.orbiting}}</td>
+      
       <td><button onclick="deleteRow('table', this, {{this.id}})" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</td>
     </tr>
     {{/each}}
@@ -104,4 +108,4 @@
 
 </div>
 
- <script src="js/spacecraft.js"></script>
+ <script src="js/space.js"></script>

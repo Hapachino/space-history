@@ -22,6 +22,7 @@ function bindButtons() {
         if (req.responseText == "dup") {
           error.textContent = "That name already exists.";
           error.className = "alert alert-danger";
+          document.getElementById("insert-form").reset();
           return;
         }
         
