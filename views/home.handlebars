@@ -3,8 +3,8 @@
     <ul class="nav navbar-nav">
       <li class="active"><a href="#">Spacecraft</a></li>
       <li><a href="/rocket">Rockets</a></li>
-      <li><a href="#">Programs</a></li>
-      <li><a href="#">Planets</a></li>
+      <li><a href="/program">Programs</a></li>
+      <li><a href="/planet">Planets</a></li>
     </ul>
   </div>
 </nav>
@@ -30,7 +30,7 @@
     <div class="form-group">
       <label class="col-sm-1 control-label">Program</label>
       <div class="col-sm-3">
-       <select class="form-control" name="pid" form="insert-form">
+        <select class="form-control" name="pid" form="insert-form">
          <option></option>
           {{#each program}}
             <option value="{{this.id}}">{{this.name}}</option>
@@ -55,19 +55,20 @@
     </div>
   </form>
 
-<br><br>
-
-<form class="form-inline" action="/filter-spacecraft">
-  <div class="form-group">
-    <select class="form-control" name="pid">
+  <div class="pull-right">
+    <form class="form-inline" action="/filter-spacecraft">
+      <div class="form-group">
+        <label class="control-label">Program</label>
+        <select class="form-control" name="pid">
          <option></option>
           {{#each program}}
             <option value="{{this.id}}">{{this.name}}</option>
           {{/each}}
         </select>
+      </div>
+      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+    </form>
   </div>
-  <button type="submit" class="btn btn-default">Filter</button>
-</form>
 
   <br><br>
 
@@ -85,7 +86,7 @@
     <tr>
       <td>{{this.name}}</td>
       <td>{{this.classification}}</td>
-      <td>{{this.program}}</td>      
+      <td>{{this.program}}</td>
       <td>{{this.startDate}}</td>
 
       {{#if this.endDate}}
@@ -93,7 +94,7 @@
       {{else}}
       <td>Ongoing</td>
       {{/if}}
-      
+
       <td><a href="/update?id={{this.id}}"><button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-edit"></span> Update</button></a></td>
 
       <td><button onclick="deleteRow('table', this, {{this.id}})" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span> Delete</td>

@@ -176,6 +176,77 @@ app.get('/delete-rocket', function (req, res, next) {
   });
 });
 
+app.get('/program', function (req, res, next) {
+  var context = {};
+  mysql.pool.query('SELECT * FROM program \
+                    ORDER BY startYear ASC', function (err, results, fields) {
+      if (err) { return next(err); }
+       for (var i = 0; i < results.length; ++i) {
+        if (results[i].startYear == ("0000")) {
+          results[i].startYear = "";
+        }
+        if (!results[i].endYear || results[i].endYear == "0000") {
+          results[i].endYear = "Ongoing";
+        }
+      }
+      context.results = results;
+
+      mysql.pool.query('SELECT DISTINCT country FROM program ORDER BY country ASC', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.country = results;
+        res.render('program', context);
+      });
+    });
+});
+
+app.get('/insert-program', function (req, res, next) {
+  mysql.pool.query('SELECT EXISTS(SELECT 1 FROM program WHERE name = ?) AS COUNT', [req.query.name], function (err, results, fields) {
+    if (results[0].COUNT) {
+      res.send("dup");
+      return;
+    } else {
+      mysql.pool.query('INSERT INTO program (name, country, startYear, endYear) VALUES (?, ?, ?, ?)',
+        [req.query.name, req.query.country, req.query.startYear, req.query.endYear], function (err, results, fields) {
+          if (err) { return next(err); }
+          res.send(JSON.stringify(results));
+        });
+    }
+  });
+});
+
+app.get('/filter-program', function (req, res, next) {
+  var context = {};
+  if (!req.query.country) {
+    res.redirect(302, "/program");
+  } else {
+    mysql.pool.query('SELECT * FROM program WHERE country = ? ORDER BY startYear ASC', [req.query.country], function (err, results, fields) {
+      if (err) { return next(err); }
+      if (err) { return next(err); }
+      for (var i = 0; i < results.length; ++i) {
+        if (results[i].startYear == ("0000")) {
+          results[i].startYear = "";
+        }
+        if (!results[i].endYear || results[i].endYear == "0000") {
+          results[i].endYear = "Ongoing";
+        }
+      }
+      context.results = results;
+
+      mysql.pool.query('SELECT DISTINCT country FROM program ORDER BY startYear ASC', function (err, results, fields) {
+        if (err) { return next(err); }
+        context.country = results;
+        res.render('program', context);
+      });
+    });
+  }
+});
+
+app.get('/delete-program', function (req, res, next) {
+  mysql.pool.query("DELETE FROM program WHERE id = ?", [req.query.id], function (err, result) {
+    if (err) { return next(err); }
+  });
+});
+
 app.use(function (req, res) {
   res.status(404);
   res.render('404');
