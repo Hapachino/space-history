@@ -6,7 +6,7 @@ var app = express();
 app.use(express.static('public'));
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 7000);
+app.set('port', 6999);
 
 app.get('/', function (req, res, next) {
   var context = {};
